@@ -30,8 +30,8 @@ modules:
       - make --file misc/Makefile install PREFIX=/app
     sources:
       - type: archive
-        url: https://github.com/qutebrowser/qutebrowser/archive/v1.12.0.tar.gz
-        sha256: 465a78beefea3bb7bd721609c6f6048e5e38b36518372be157508cd317fbe50e
+        url: https://github.com/qutebrowser/qutebrowser/archive/v1.13.0.tar.gz
+        sha256: 68de36b7e9743828984f841dc49fbf5f145d32d965f0db007051430422bc5f74
     cleanup:
       - /share/man
     modules:
@@ -91,19 +91,65 @@ modules:
         build-commands:
           - pip3 install --prefix=${FLATPAK_DEST} pyaml==20.4.0
       - name: pyqt5-webengine
-        buildsystem: simple
-        build-commands:
-          - python3 configure.py -w --sipdir=/app/share/sip/PyQt5 --pyqt-sipdir=/app/share/sip/PyQt5
-          - sip-build --no-make --api-dir /app/share/qt/qsci/api/python
-          - cd build && make
-          - cd build && make install
+#       buildsystem: simple
+#       build-commands:
+#         - python3 configure.py -w --sipdir=/app/share/sip/PyQt5 --pyqt-sipdir=/app/share/sip/PyQt5
+#         - sip-build --no-make --api-dir /app/share/qt/qsci/api/python
+#         - cd build && make
+#         - cd build && make install
+        build-options:
+          env:
+            - QMAKEPATH=/app/lib
+        config-opts:
+          - QMAKE_CFLAGS_RELEASE='-I/usr/include/python3.7m'
+          - QMAKE_CXXFLAGS_RELEASE='-I/usr/include/python3.7m'
+          - QMAKE_INCDIR+=/app/include/QtWebEngine
+          - QMAKE_INCDIR+=/app/include/QtWebEngineCore
+          - QMAKE_INCDIR+=/app/include/QtWebEngineWidgets
         sources:
           - type: archive
-            url: https://pypi.python.org/packages/source/P/PyQtWebEngine/PyQtWebEngine-5.15.0.tar.gz
-            sha256: 670812688e40bf75f70ddf01eadd897d231300318d3856b275bf8e7e0085bf75
+#           url: https://www.riverbankcomputing.com/static/Downloads/PyQtWebEngine/5.13.2/PyQtWebEngine-5.13.2.tar.gz
+#           sha256: 4264911b5847c75721d8c9c30af92e58a216bd25ceef37f7abf921005c1d45a9
+            url: https://pypi.python.org/packages/source/P/PyQtWebEngine/PyQtWebEngine-5.14.0.tar.gz
+            sha256: e11595051f8bfbfa49175d899b2c8c2eea3a3deac4141edf4db68c3555221c92
+            # https://www.riverbankcomputing.com/pipermail/pyqt/2020-June/042985.html
+#           url: https://pypi.python.org/packages/source/P/PyQtWebEngine/PyQtWebEngine-5.15.0.tar.gz
+#           sha256: 670812688e40bf75f70ddf01eadd897d231300318d3856b275bf8e7e0085bf75
+          - type: script
+            commands:
+              - processed=`sed -e 's|prefix|sysroot|' <<< $@`
+              - python3 configure.py $processed
+            dest-filename: configure
+#       sources:
+#         - type: archive
+#           url: https://pypi.python.org/packages/source/P/PyQtWebEngine/PyQtWebEngine-5.15.0.tar.gz
+#           sha256: 670812688e40bf75f70ddf01eadd897d231300318d3856b275bf8e7e0085bf75
         cleanup:
           - /lib/debug
         modules:
+#         - name: sip
+#         # pyqt5-webengine fail to build without sip?
+#           config-opts:
+#             - --no-dist-info
+#             - --no-stubs
+#             - --bindir=/app/bin
+#             - --destdir=/app/lib/python3.7/site-packages
+#             - --incdir=/app/include
+#             - --pyidir=/app/lib/python3.7/site-packages
+#             - --sipdir=/app/share/sip
+#             - --sip-module PyQt5.sip
+#           sources:
+#             - type: archive
+#               url: https://www.riverbankcomputing.com/static/Downloads/sip/4.19.22/sip-4.19.22.tar.gz
+#               sha256: e1b768824ec1a2ee38dd536b6b6b3d06de27b00a2f5f55470d1b512306e3be45
+#             - type: script
+#               commands:
+#                 - processed=`sed -e 's|--prefix=/app||' <<< $@`
+#                 - python3 configure.py $processed
+#               dest-filename: configure
+#           cleanup:
+#             - /bin
+#             - /include
           - name: python-pyqt5-sip
             buildsystem: simple
             build-commands:
