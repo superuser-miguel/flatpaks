@@ -1,0 +1,47 @@
+# flatpak-pip-generator
+#   pip dependencies
+#     requirements-parser
+#   system dependencies:
+#     sdl sdl_image sdl_mixer sdl_ttf portmidi
+#   command:
+#     flatpak-pip-generator --requirements-file=requirements.txt --output pypi-dependencies
+
+###########################
+# v1.0.3
+###########################
+
+#PyQt5==5.13.2
+#QScintilla==2.11.3
+#PyQtChart==5.13.1
+
+#setuptools
+#importlib-metadata
+
+#Pillow>=5.2.0
+#appdirs>=1.4.3
+#gpiozero>=1.4.1
+#guizero>=1.1.0
+#matplotlib==2.2.2
+#nudatus>=0.0.3
+#pgzero==1.2
+#pigpio>=1.40.post1
+#pycodestyle==2.4.0
+#pyflakes==2.0.0
+#pyserial==3.4
+#qtconsole==4.3.1
+#requests>=2.19.1
+#semver>=2.8.0
+
+###########################
+# master
+###########################
+Flask==1.1.2
+appdirs>=1.4.3
+black>=19.10b0
+flake8>=3.8.3
+nudatus>=0.0.3
+pgzero==1.2
+pyserial==3.4
+python-dateutil==2.8.0
+qtconsole==4.7.4
+semver>=2.8.0
